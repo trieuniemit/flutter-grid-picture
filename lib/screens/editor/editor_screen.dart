@@ -7,12 +7,12 @@ import 'const/resource.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
 import 'package:image_picker/image_picker.dart';
 
-class ExtendedImageExample extends StatefulWidget {
+class EditorScreen extends StatefulWidget {
   @override
-  _ExtendedImageExampleState createState() => _ExtendedImageExampleState();
+  _EditorScreenState createState() => _EditorScreenState();
 }
 
-class _ExtendedImageExampleState extends State<ExtendedImageExample> {
+class _EditorScreenState extends State<EditorScreen> {
   final GlobalKey<ExtendedImageEditorState> editorKey = GlobalKey<ExtendedImageEditorState>();
 
   ImageProvider provider;
@@ -34,6 +34,18 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
               onPressed: _pick,
             ),
             IconButton(
+              icon: Icon(Icons.flip),
+              onPressed: flip
+            ),
+            IconButton(
+              icon: Icon(Icons.rotate_left),
+              onPressed: () => rotate(false)
+            ),
+            IconButton(
+              icon: Icon(Icons.rotate_right),
+              onPressed: () => rotate(true)
+            ),
+            IconButton(
               icon: Icon(Icons.check),
               onPressed: () async {
                 await crop();
@@ -43,53 +55,28 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
         ),
         body: Container(
           height: double.infinity,
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 1,
-                child: buildImage(),
-              ),
-              Expanded(
-                child: SliderTheme(
-                  data: const SliderThemeData(
-                    showValueIndicator: ShowValueIndicator.always,
-                  ),
-                  child: Column(
-                    children: <Widget>[
-                      _buildSat(),
-                      _buildBrightness(),
-                      _buildCon(),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+          child: ExtendedImage(
+              image: provider,
+              height: 400,
+              width: 400,
+              extendedImageEditorKey: editorKey,
+              mode: ExtendedImageMode.editor,
+              fit: BoxFit.contain,
+              initEditorConfigHandler: (ExtendedImageState state) {
+                return EditorConfig(
+                  maxScale: 5,
+                  cropRectPadding: const EdgeInsets.all(20),
+                  hitTestSize: 20,
+                  cropAspectRatio: 1,
+                );
+              },
+            ),
         ),
         bottomNavigationBar: _buildFunctions());
   }
-
-  Widget buildImage() {
-    return ExtendedImage(
-      image: provider,
-      height: 400,
-      width: 400,
-      extendedImageEditorKey: editorKey,
-      mode: ExtendedImageMode.editor,
-      fit: BoxFit.contain,
-      initEditorConfigHandler: (ExtendedImageState state) {
-        return EditorConfig(
-          maxScale: 8.0,
-          cropRectPadding: const EdgeInsets.all(20.0),
-          hitTestSize: 20.0,
-          cropAspectRatio: 2 / 1,
-        );
-      },
-    );
-  }
-
   Widget _buildFunctions() {
     return BottomNavigationBar(
+      backgroundColor: Colors.blue,
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.flip),
@@ -143,9 +130,9 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       option.addOption(RotateOption(radian.toInt()));
     }
 
-    option.addOption(ColorOption.saturation(sat));
-    option.addOption(ColorOption.brightness(bright));
-    option.addOption(ColorOption.contrast(con));
+//    option.addOption(ColorOption.saturation(sat));
+//    option.addOption(ColorOption.brightness(bright));
+//    option.addOption(ColorOption.contrast(con));
 
     option.outputFormat = const OutputFormat.png(88);
 
@@ -203,51 +190,5 @@ class _ExtendedImageExampleState extends State<ExtendedImageExample> {
       provider = ExtendedFileImageProvider(File(result.path));
       setState(() {});
     }
-  }
-
-  double sat = 1;
-  double bright = 1;
-  double con = 1;
-
-  Widget _buildSat() {
-    return Slider(
-      label: 'sat : ${sat.toStringAsFixed(2)}',
-      onChanged: (double value) {
-        setState(() {
-          sat = value;
-        });
-      },
-      value: sat,
-      min: 0,
-      max: 2,
-    );
-  }
-
-  Widget _buildBrightness() {
-    return Slider(
-      label: 'brightness : ${bright.toStringAsFixed(2)}',
-      onChanged: (double value) {
-        setState(() {
-          bright = value;
-        });
-      },
-      value: bright,
-      min: 0,
-      max: 2,
-    );
-  }
-
-  Widget _buildCon() {
-    return Slider(
-      label: 'con : ${con.toStringAsFixed(2)}',
-      onChanged: (double value) {
-        setState(() {
-          con = value;
-        });
-      },
-      value: con,
-      min: 0,
-      max: 4,
-    );
   }
 }

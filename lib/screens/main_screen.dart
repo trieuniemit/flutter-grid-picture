@@ -4,14 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
-import 'editor/edtor_screen.dart';
+import 'editor/editor_screen.dart';
 
 class MainScreen extends StatelessWidget {
   final picker = ImagePicker();
 
   Future _getImage(ImageSource source, context) async {
     // final pickedFile = await picker.getImage(source: source);
-    Routes.pushTo(context, ExtendedImageExample());
+    Routes.pushTo(context, EditorScreen());
   }
 
   @override
