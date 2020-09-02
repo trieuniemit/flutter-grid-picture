@@ -5,16 +5,14 @@ import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:app.gridpicture/screens/editor/simple_crop.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-const _kCropOverlayActiveOpacity = 0.3;
-const _kCropOverlayInactiveOpacity = 0.7;
-const _kCropHandleSize = 10.0;
-
-enum _CropAction { none, moving, scaling }
+import 'common/constants.dart';
+import 'widgets/crop_painter.dart';
 
 class ImgCrop extends StatefulWidget {
   final ImageProvider image;
@@ -53,7 +51,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
   Rect _view;
   Rect _area;
   Offset _lastFocalPoint;
-  _CropAction _action;
+  CropAction _action;
   double _startScale;
   Rect _startView;
   Tween<Rect> _viewTween;
@@ -75,6 +73,8 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
 
   bool get _isEnabled => !_view.isEmpty && _image != null;
 
+  CropNumber _cropNumber = CropNumber.Three;
+
   @override
   void initState() {
     super.initState();
@@ -83,7 +83,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     _scale = 1.0;
     _ratio = 1.0;
     _lastFocalPoint = Offset.zero;
-    _action = _CropAction.none;
+    _action = CropAction.none;
     _activeController = AnimationController(
       vsync: this,
       value: 0.0,
@@ -144,24 +144,95 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: const BoxConstraints.expand(),
-      child: GestureDetector(
-        key: _surfaceKey,
-        behavior: HitTestBehavior.opaque,
-        onScaleStart: _isEnabled ? _handleScaleStart : null,
-        onScaleUpdate: _isEnabled ? _handleScaleUpdate : null,
-        onScaleEnd: _isEnabled ? _handleScaleEnd : null,
-        child: CustomPaint(
-          painter: _CropPainter(
-              image: _image,
-              ratio: _ratio,
-              view: _view,
-              area: _area,
-              scale: _scale,
-              active: _activeController.value,
-              chipShape: widget.chipShape),
-        ),
+    return SafeArea(
+      child: Stack(
+        children: [
+          ConstrainedBox(
+              constraints: const BoxConstraints.expand(),
+              child: GestureDetector(
+                key: _surfaceKey,
+                behavior: HitTestBehavior.opaque,
+                onScaleStart: _isEnabled ? _handleScaleStart : null,
+                onScaleUpdate: _isEnabled ? _handleScaleUpdate : null,
+                onScaleEnd: _isEnabled ? _handleScaleEnd : null,
+                child: CustomPaint(
+                  painter: CropPainter(
+                    image: _image,
+                    ratio: _ratio,
+                    view: _view,
+                    area: _area,
+                    scale: _scale,
+                    active: _activeController.value,
+                    chipShape: widget.chipShape,
+                    cropNumber: _cropNumber
+                  ),
+                ),
+              ),
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: Container(
+              color: Colors.black12,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Icon(Icons.close, size: 30, color: Colors.white),
+                  ),
+                  CupertinoButton(
+                    onPressed: () => {},
+                    child: Icon(Icons.check, size: 30, color: Colors.white),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: Container(
+              color: Colors.black12,
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoButton(
+                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoH; }),
+                    child: Opacity(
+                      opacity: _cropNumber == CropNumber.TwoH ? 1 : 0.6,
+                      child: Image.asset('resources/images/two-h.png' , width: 24),
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoV; }),
+                    child: Opacity(
+                        opacity: _cropNumber == CropNumber.TwoV ? 1 : 0.6,
+                        child: Image.asset('resources/images/two-v.png' , width: 24)
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () => setState((){ _cropNumber = CropNumber.Three; }),
+                    child: Opacity(
+                        opacity: _cropNumber == CropNumber.Three ? 1 : 0.6,
+                        child: Image.asset('resources/images/three.png' , width: 24)
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () => setState((){ _cropNumber = CropNumber.Four; }),
+                    child: Opacity(
+                        opacity: _cropNumber == CropNumber.Four ? 1 : 0.6,
+                        child: Image.asset('resources/images/four.png' , width: 24)
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -177,7 +248,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
   // NOTE: 区域性缩小 总区域 - 10 * 10 区域
   Size get _boundaries {
     return _surfaceKey.currentContext.size -
-        Offset(_kCropHandleSize, _kCropHandleSize);
+        Offset(kCropHandleSize, kCropHandleSize);
   }
 
   void _settleAnimationChanged() {
@@ -199,7 +270,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     }
 
     final _deviceWidth =
-        MediaQuery.of(context).size.width - (2 * _kCropHandleSize);
+        MediaQuery.of(context).size.width - (2 * kCropHandleSize);
     final _areaOffset = (_deviceWidth - (widget.chipRadius * 2));
     final _areaOffsetRadio = _areaOffset / _deviceWidth;
     final width = 1.0 - _areaOffsetRadio;
@@ -248,7 +319,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     _activate(1.0);
     _settleController.stop(canceled: false);
     _lastFocalPoint = details.focalPoint;
-    _action = _CropAction.none;
+    _action = CropAction.none;
     _startScale = _scale;
     _startView = _view;
   }
@@ -305,13 +376,12 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     );
   }
 
-  // 手势触发过程 判断action 类型:移动或者缩放, 跟新view 重绘image
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     _action = details.rotation == 0.0 && details.scale == 1.0
-        ? _CropAction.moving
-        : _CropAction.scaling;
+        ? CropAction.moving
+        : CropAction.scaling;
 
-    if (_action == _CropAction.moving) {
+    if (_action == CropAction.moving) {
       final delta = details.focalPoint - _lastFocalPoint; // offset相减 得出一次相对移动距离
       _lastFocalPoint = details.focalPoint;
 
@@ -322,7 +392,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
           delta.dy / (_image.height * _scale * _ratio),
         );
       });
-    } else if (_action == _CropAction.scaling) {
+    } else if (_action == CropAction.scaling) {
       setState(() {
         _scale = _startScale * details.scale;
 
@@ -342,148 +412,5 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
         );
       });
     }
-  }
-}
-
-class _CropPainter extends CustomPainter {
-  final ui.Image image;
-  final Rect view;
-  final double ratio;
-  final Rect area;
-  final double scale;
-  final double active;
-  final String chipShape;
-
-  _CropPainter(
-      {this.image,
-        this.view,
-        this.ratio,
-        this.area,
-        this.scale,
-        this.active,
-        this.chipShape});
-
-  @override
-  bool shouldRepaint(_CropPainter oldDelegate) {
-    return oldDelegate.image != image ||
-        oldDelegate.view != view ||
-        oldDelegate.ratio != ratio ||
-        oldDelegate.area != area ||
-        oldDelegate.active != active ||
-        oldDelegate.scale != scale;
-  }
-
-  currentRect(size) {
-    return Rect.fromLTWH(
-      _kCropHandleSize / 2,
-      _kCropHandleSize / 2,
-      size.width - _kCropHandleSize,
-      size.height - _kCropHandleSize,
-    );
-  }
-
-  Rect currentBoundaries(size) {
-    var rect = currentRect(size);
-    return Rect.fromLTWH(
-      rect.width * area.left,
-      rect.height * area.top,
-      rect.width * area.width,
-      rect.height * area.height,
-    );
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final rect = currentRect(size);
-
-    canvas.save();
-    canvas.translate(rect.left, rect.top);
-
-    final paint = Paint()..isAntiAlias = false;
-
-    if (image != null) {
-      final src = Rect.fromLTWH(
-        0.0,
-        0.0,
-        image.width.toDouble(),
-        image.height.toDouble(),
-      );
-      final dst = Rect.fromLTWH(
-        view.left * image.width * scale * ratio,
-        view.top * image.height * scale * ratio,
-        image.width * scale * ratio,
-        image.height * scale * ratio,
-      );
-
-      canvas.save();
-      canvas.clipRect(Rect.fromLTWH(0.0, 0.0, rect.width, rect.height));
-      canvas.drawImageRect(image, src, dst, paint);
-      canvas.restore();
-    }
-
-    paint.color = Color.fromRGBO(
-        0x0,
-        0x0,
-        0x0,
-        _kCropOverlayActiveOpacity * active +
-            _kCropOverlayInactiveOpacity * (1.0 - active));
-    final boundaries = currentBoundaries(size);
-
-    final _path1 = Path()
-      ..addRect(Rect.fromLTRB(0.0, 0.0, rect.width, rect.height));
-
-    Path _path2;
-
-    if (chipShape == 'rect') {
-      _path2 = Path()..addRect(boundaries);
-    } else {
-      // radius
-      _path2 = Path()
-        ..addRRect(RRect.fromLTRBR(
-            boundaries.left,
-            boundaries.top,
-            boundaries.right,
-            boundaries.bottom,
-            Radius.circular(boundaries.height / 2)));
-    }
-
-//  Clip path
-//    canvas.clipPath(Path.combine(
-//        PathOperation.difference, _path1, _path2)); //MARK: 合并路径，选择交叉选区
-
-    canvas.drawRect(Rect.fromLTRB(0.0, 0.0, rect.width, rect.height), paint);
-
-    paint
-      ..isAntiAlias = true
-      ..color = Colors.white
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    if (chipShape == 'rect') {
-      canvas.drawRect(
-          Rect.fromLTRB(boundaries.left - 1, boundaries.top - 1,
-              boundaries.right + 1, boundaries.bottom + 1),
-          paint);
-
-      Path gridPath = Path();
-
-      Point midLeftPoint = Point(boundaries.left, (boundaries.bottom - boundaries.top) / 2 + boundaries.top);
-
-      gridPath.moveTo(midLeftPoint.x, midLeftPoint.y);
-      gridPath.lineTo(size.width, size.height);
-      canvas.drawPath(gridPath, paint);
-    } else {
-      //radius
-      canvas.drawRRect(
-          RRect.fromLTRBR(
-              boundaries.left - 1,
-              boundaries.top - 1,
-              boundaries.right + 1,
-              boundaries.bottom + 1,
-              Radius.circular(boundaries.height / 2)),
-          paint);
-    }
-
-    canvas.restore();
   }
 }
