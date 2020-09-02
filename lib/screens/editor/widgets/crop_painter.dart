@@ -120,11 +120,11 @@ class CropPainter extends CustomPainter {
     double y = (bound.top + (bound.bottom - bound.top) / 3 * 2);
 
     // draw grid
-    if(cropNumber == CropNumber.TwoV) {
+    if(cropNumber == CropNumber.TwoH) {
       gridPath.moveTo(bound.centerLeft.dx, bound.centerLeft.dy);
       gridPath.lineTo(bound.centerRight.dx, bound.centerRight.dy);
 
-    } else if(cropNumber == CropNumber.TwoH) {
+    } else if(cropNumber == CropNumber.TwoV) {
       gridPath.moveTo(bound.topCenter.dx, bound.topCenter.dy);
       gridPath.lineTo(bound.bottomCenter.dx, bound.bottomCenter.dy);
 
@@ -144,13 +144,14 @@ class CropPainter extends CustomPainter {
       gridPath.moveTo(bound.left, y);
       gridPath.lineTo(bound.right, y);
 
-      double x = (bound.left + (bound.right - bound.left) / 3);
+      double x1 = (bound.left + (bound.right - bound.left) / 3);
+      double x2 = (bound.left + (bound.right - bound.left) * 2 / 3);
 
-      gridPath.moveTo(x, y);
-      gridPath.lineTo(x, bound.bottom);
+      gridPath.moveTo(x1, y);
+      gridPath.lineTo(x1, bound.bottom);
 
-      gridPath.moveTo(x * 2, y);
-      gridPath.lineTo(x * 2, bound.bottom);
+      gridPath.moveTo(x2, y);
+      gridPath.lineTo(x2, bound.bottom);
     }
     canvas.drawPath(gridPath, paint);
   }

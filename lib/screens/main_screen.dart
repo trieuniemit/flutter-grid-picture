@@ -11,8 +11,8 @@ class MainScreen extends StatelessWidget {
 
   Future _getImage(ImageSource source, context) async {
      final pickedFile = await picker.getImage(source: source);
-    Routes.pushTo(context, ImgCrop(
-      image: FileImage(File(pickedFile.path)),
+    Routes.pushTo(context, EditorScreen(
+      image: File(pickedFile.path),
       maximumScale: 5,
       chipShape: 'rect',
     ));

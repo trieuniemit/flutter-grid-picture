@@ -4,7 +4,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:ui';
 
-import 'package:app.gridpicture/screens/editor/simple_crop.dart';
+import 'package:app.gridpicture/screens/editor/editor_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -14,14 +14,14 @@ import 'package:flutter/widgets.dart';
 import 'common/constants.dart';
 import 'widgets/crop_painter.dart';
 
-class ImgCrop extends StatefulWidget {
-  final ImageProvider image;
+class EditorScreen extends StatefulWidget {
+  final File image;
   final double maximumScale;
   final ImageErrorListener onImageError;
-  final double chipRadius; // 裁剪半径
-  final String chipShape; // 裁剪区域形状
+  final double chipRadius;
+  final String chipShape;
 
-  const ImgCrop(
+  const EditorScreen(
       {Key key,
         this.image,
         this.maximumScale: 2.0,
@@ -33,14 +33,14 @@ class ImgCrop extends StatefulWidget {
         super(key: key);
 
   @override
-  State<StatefulWidget> createState() => ImgCropState();
+  State<StatefulWidget> createState() => EditorScreenState();
 
-  static ImgCropState of(BuildContext context) {
+  static EditorScreenState of(BuildContext context) {
     return context.findAncestorStateOfType();
   }
 }
 
-class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
+class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixin, Drag {
   final _surfaceKey = GlobalKey();
   AnimationController _activeController;
   AnimationController _settleController;
@@ -107,7 +107,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
   }
 
   @override
-  void didUpdateWidget(ImgCrop oldWidget) {
+  void didUpdateWidget(EditorScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.image != oldWidget.image) {
       _getImage();
@@ -115,29 +115,39 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
     _activate(1.0);
   }
 
-  Future<File> cropCompleted(File file, {int pictureQuality}) async {
-    final options = await ImageCrop.getImageOptions(file: file);
+  Future<File> cropCompleted(File file, {int pictureQuality = 1}) async {
+    final options = await EditorChannel.getImageOptions(file: file);
     debugPrint('image width: ${options.width}, height: ${options.height}');
-    final sampleFile = await ImageCrop.sampleImage(
-      file: file,
-      preferredWidth: (pictureQuality / scale).round(),
-      preferredHeight: (pictureQuality / scale).round(),
+
+    List<Rect> areas = [];
+
+    if(_cropNumber == CropNumber.TwoH) {
+      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height / 2));
+      areas.add(Rect.fromLTWH(area.left, area.center.dy, area.width, area.height / 2));
+    }
+
+    var croppedFile;
+
+    for(Rect rect in areas) {
+      croppedFile = await EditorChannel.cropImage(
+        file: file,
+        area: rect,
+      );
+    }
+
+    showDialog(context: context,
+        child: Image.file(croppedFile)
     );
 
-    final croppedFile = await ImageCrop.cropImage(
-      file: sampleFile,
-      area: area,
-    );
     return croppedFile;
   }
 
   void _getImage({bool force: false}) {
     final oldImageStream = _imageStream;
-    _imageStream = widget.image.resolve(createLocalImageConfiguration(context));
+    _imageStream = FileImage(widget.image).resolve(createLocalImageConfiguration(context));
     if (_imageStream.key != oldImageStream?.key || force) {
       oldImageStream?.removeListener(_imageListener);
-      _imageListener =
-          ImageStreamListener(_updateImage, onError: widget.onImageError);
+      _imageListener = ImageStreamListener(_updateImage, onError: widget.onImageError);
       _imageStream.addListener(_imageListener);
     }
   }
@@ -183,7 +193,7 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
                     child: Icon(Icons.close, size: 30, color: Colors.white),
                   ),
                   CupertinoButton(
-                    onPressed: () => {},
+                    onPressed: () => cropCompleted(widget.image),
                     child: Icon(Icons.check, size: 30, color: Colors.white),
                   )
                 ],
@@ -201,16 +211,16 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(
-                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoH; }),
+                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoV; }),
                     child: Opacity(
-                      opacity: _cropNumber == CropNumber.TwoH ? 1 : 0.6,
+                      opacity: _cropNumber == CropNumber.TwoV ? 1 : 0.6,
                       child: Image.asset('resources/images/two-h.png' , width: 24),
                     ),
                   ),
                   CupertinoButton(
-                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoV; }),
+                    onPressed: () => setState((){ _cropNumber = CropNumber.TwoH; }),
                     child: Opacity(
-                        opacity: _cropNumber == CropNumber.TwoV ? 1 : 0.6,
+                        opacity: _cropNumber == CropNumber.TwoH ? 1 : 0.6,
                         child: Image.asset('resources/images/two-v.png' , width: 24)
                     ),
                   ),
@@ -225,6 +235,13 @@ class ImgCropState extends State<ImgCrop> with TickerProviderStateMixin, Drag {
                     onPressed: () => setState((){ _cropNumber = CropNumber.Four; }),
                     child: Opacity(
                         opacity: _cropNumber == CropNumber.Four ? 1 : 0.6,
+                        child: Image.asset('resources/images/four-2.png' , width: 24)
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () => setState((){ _cropNumber = CropNumber.FourEvenly; }),
+                    child: Opacity(
+                        opacity: _cropNumber == CropNumber.FourEvenly ? 1 : 0.6,
                         child: Image.asset('resources/images/four.png' , width: 24)
                     ),
                   ),

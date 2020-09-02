@@ -30,15 +30,8 @@ class ImageOptions {
   }
 }
 
-class ImageCrop {
-  static const _channel =
-  const MethodChannel('plugins.lykhonis.com/image_crop');
-
-  static Future<bool> requestPermissions() {
-    return _channel
-        .invokeMethod('requestPermissions')
-        .then<bool>((result) => result);
-  }
+class EditorChannel {
+  static const _channel = const MethodChannel('app.gribpicture/image_crop');
 
   static Future<ImageOptions> getImageOptions({File file}) async {
     assert(file != null);
@@ -67,26 +60,4 @@ class ImageCrop {
     }).then<File>((result) => File(result));
   }
 
-  static Future<File> sampleImage({
-    File file,
-    int preferredSize,
-    int preferredWidth,
-    int preferredHeight,
-  }) async {
-    assert(file != null);
-    assert(() {
-      if (preferredSize == null &&
-          (preferredWidth == null || preferredHeight == null)) {
-        throw ArgumentError(
-            'Preferred size or both width and height of a resampled image must be specified.');
-      }
-      return true;
-    }());
-    final String path = await _channel.invokeMethod('sampleImage', {
-      'path': file.path,
-      'maximumWidth': preferredSize ?? preferredWidth,
-      'maximumHeight': preferredSize ?? preferredHeight,
-    });
-    return File(path);
-  }
 }
