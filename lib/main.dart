@@ -1,14 +1,17 @@
 import 'package:app.gridpicture/blocs/app/bloc.dart';
+import 'package:app.gridpicture/helpers/file_helpers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:app.gridpicture/repositories/chat_repository.dart';
 import 'package:app.gridpicture/widgets/restart_app.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:app.gridpicture/config/routes.dart';
 import 'package:app.gridpicture/bloc_delegate.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider_ex/path_provider_ex.dart';
 import 'language.dart';
 
 void main() {
@@ -17,9 +20,12 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  static StorageInfo storageInfo;
+
 
   @override
   Widget build(BuildContext context) {
+    FileHelper.createAppDirectories();
 
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
 

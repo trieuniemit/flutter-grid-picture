@@ -141,7 +141,7 @@ public final class ImageCrop implements MethodCallHandler {
 //                canvas.drawBitmap(srcBitmap, transformations, paint);
 
             try {
-                final File dstFile = createTemporaryImageFile();
+                final File dstFile = createTemporaryImageFile(srcFile);
                 compressBitmap(dstBitmap, dstFile);
                 ui(() -> result.success(dstFile.getAbsolutePath()));
             } catch (final IOException e) {
@@ -187,9 +187,9 @@ public final class ImageCrop implements MethodCallHandler {
         });
     }
 
-    private File createTemporaryImageFile() throws IOException {
+    private File createTemporaryImageFile(File file) throws IOException {
         File directory = activity.getCacheDir();
-        String name = "image_crop_" + UUID.randomUUID().toString();
+        String name = file.getName().replace("image_picker", "");
         return File.createTempFile(name, ".jpg", directory);
     }
 

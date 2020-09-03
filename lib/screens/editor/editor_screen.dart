@@ -4,6 +4,8 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:ui';
 
+import 'package:app.gridpicture/extensions/file_extension.dart';
+import 'package:app.gridpicture/helpers/file_helpers.dart';
 import 'package:app.gridpicture/screens/editor/editor_channel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -12,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'common/constants.dart';
+import 'common/helper.dart';
 import 'widgets/crop_painter.dart';
 
 class EditorScreen extends StatefulWidget {
@@ -115,31 +118,22 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     _activate(1.0);
   }
 
-  Future<File> cropCompleted(File file, {int pictureQuality = 1}) async {
+  Future<void> cropCompleted(File file, {int pictureQuality = 1}) async {
     final options = await EditorChannel.getImageOptions(file: file);
     debugPrint('image width: ${options.width}, height: ${options.height}');
 
-    List<Rect> areas = [];
+    List<Rect> areas = getAreasOfImage(area, _cropNumber);
 
-    if(_cropNumber == CropNumber.TwoH) {
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height / 2));
-      areas.add(Rect.fromLTWH(area.left, area.center.dy, area.width, area.height / 2));
-    }
-
-    var croppedFile;
-
+    int index = 0;
     for(Rect rect in areas) {
-      croppedFile = await EditorChannel.cropImage(
+      var croppedFile = await EditorChannel.cropImage(
         file: file,
         area: rect,
       );
+      croppedFile.copySync(FileHelper.pictureFolder + '/${index}_' + croppedFile.name);
+      croppedFile.deleteSync();
+      index++;
     }
-
-    showDialog(context: context,
-        child: Image.file(croppedFile)
-    );
-
-    return croppedFile;
   }
 
   void _getImage({bool force: false}) {

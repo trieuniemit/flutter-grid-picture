@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider_ex/path_provider_ex.dart';
 import 'bloc.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
@@ -9,6 +11,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc() {
     this.add(AppStarted());
   }
+
 
   @override
   AppState get initialState => AppState(language: 'ja');
