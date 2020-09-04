@@ -19,7 +19,7 @@ List<Rect> getAreasOfImage(Rect area, CropNumber cropNumber) {
       areas.add(Rect.fromLTWH(area.right / 2, area.bottom * 2/3, area.width / 2, area.height * 1/3));
       break;
     case CropNumber.Four:
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.bottom * 2/3));
+      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height * 2/3));
       areas.add(Rect.fromLTWH(area.left, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
       areas.add(Rect.fromLTWH(area.right * 1/3, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
       areas.add(Rect.fromLTWH(area.right * 2/3, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
