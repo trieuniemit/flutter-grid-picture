@@ -6,23 +6,23 @@ List<Rect> getAreasOfImage(Rect area, CropNumber cropNumber) {
 
   switch(cropNumber) {
     case CropNumber.TwoH:
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height / 2));
-      areas.add(Rect.fromLTWH(area.left, area.center.dy, area.width, area.height / 2));
+      areas.add(Rect.fromLTRB(area.left, area.top, area.right, area.bottom / 2));
+      areas.add(Rect.fromLTRB(area.left, area.bottom / 2, area.right, area.bottom));
     break;
     case CropNumber.TwoV:
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width / 2, area.height));
-      areas.add(Rect.fromLTWH(area.center.dy, area.top, area.width / 2, area.height));
+      areas.add(Rect.fromLTRB(area.left, area.top, area.right / 2, area.bottom));
+      areas.add(Rect.fromLTRB(area.right/2, area.top, area.right, area.bottom));
       break;
     case CropNumber.Three:
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height * 2/3));
-      areas.add(Rect.fromLTWH(area.left, area.bottom * 2/3, area.width / 2, area.height * 1/3));
-      areas.add(Rect.fromLTWH(area.right / 2, area.bottom * 2/3, area.width / 2, area.height * 1/3));
+      areas.add(Rect.fromLTRB(area.left, area.top, area.right, area.bottom * 2/3));
+      areas.add(Rect.fromLTRB(area.left, area.bottom * 2/3, area.right / 2, area.bottom));
+      areas.add(Rect.fromLTRB(area.right / 2, area.bottom * 2/3, area.right, area.bottom));
       break;
     case CropNumber.Four:
-      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height * 2/3));
-      areas.add(Rect.fromLTWH(area.left, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
-      areas.add(Rect.fromLTWH(area.right * 1/3, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
-      areas.add(Rect.fromLTWH(area.right * 2/3, area.bottom * 2/3, area.width * 1/3, area.height * 1/3));
+      areas.add(Rect.fromLTRB(area.left, area.top, area.right, area.bottom * 2/3));
+      areas.add(Rect.fromLTRB(area.left, area.bottom * 2/3, area.right * 1/3, area.bottom));
+      areas.add(Rect.fromLTRB(area.right * 1/3, area.bottom * 2/3, area.right * 2/3, area.bottom));
+      areas.add(Rect.fromLTRB(area.right * 2/3, area.bottom * 2/3, area.right, area.bottom));
       break;
     case CropNumber.FourEvenly:
       // TODO: Handle this case.

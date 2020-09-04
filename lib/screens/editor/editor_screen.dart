@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:image_editor/image_editor.dart';
 
 import 'common/constants.dart';
 import 'common/helper.dart';
@@ -122,16 +123,41 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     final options = await EditorChannel.getImageOptions(file: file);
     debugPrint('image width: ${options.width}, height: ${options.height}');
 
-    List<Rect> areas = getAreasOfImage(area, _cropNumber);
+    Rect cropArea = Rect.fromLTRB(
+        _image.width * area.left,
+        _image.height * area.top,
+        _image.width * area.right,
+        _image.height * area.bottom
+    );
 
-    int index = 0;
+    List<Rect> areas = getAreasOfImage(cropArea, _cropNumber);
+    print(areas);
+
+    final editorOption = ImageEditorOption();
+
+    int index = 1;
     for(Rect rect in areas) {
-      var croppedFile = await EditorChannel.cropImage(
-        file: file,
-        area: rect,
+      editorOption.addOption(ClipOption(
+        x: rect.left < 0 ? 0 : rect.left,
+        y: rect.top < 0 ? 0 : rect.top,
+        height: rect.height,
+        width: rect.width,
+      ));
+
+      final result = await ImageEditor.editImage(
+        image: await widget.image.readAsBytes(),
+        imageEditorOption: editorOption,
       );
-      croppedFile.copySync(FileHelper.pictureFolder + '/${index}_' + croppedFile.name);
-      croppedFile.deleteSync();
+
+      String fileName = widget.image.name.replaceAll('image_picker', '')
+                        .replaceAll('.${widget.image.ext}', '');
+
+      String filePath = '${FileHelper.pictureFolder}/${fileName}_$index.${widget.image.ext}';
+      await File(filePath) .writeAsBytes(result);
+
+      print('Image $index - $filePath');
+
+      editorOption.reset();
       index++;
     }
   }

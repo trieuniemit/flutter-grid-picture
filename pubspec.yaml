@@ -48,7 +48,6 @@ dependencies:
   flutter_statusbarcolor: ^0.2.3 #statusbar
   image_editor: ^0.7.1
   image_picker: ^0.6.7+7
-  extended_image: ^1.1.1
 
 # dependency for dev
 dev_dependencies:
