@@ -4,4 +4,4 @@ const kCropHandleSize = 10.0;
 
 enum CropAction { none, moving, scaling }
 
-enum CropNumber {TwoV, TwoH, Three, Four, FourEvenly}
+enum CropNumber {TwoV, TwoH, Three, Four, Nine}

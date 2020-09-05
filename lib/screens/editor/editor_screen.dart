@@ -130,8 +130,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
         _image.height * area.bottom
     );
 
-    List<Rect> areas = getAreasOfImage(cropArea, _cropNumber);
-    print(areas);
+    List<Rect> areas = getCropAreasOfImage(cropArea, _cropNumber);
 
     final editorOption = ImageEditorOption();
 
@@ -259,10 +258,10 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
                     ),
                   ),
                   CupertinoButton(
-                    onPressed: () => setState((){ _cropNumber = CropNumber.FourEvenly; }),
+                    onPressed: () => setState((){ _cropNumber = CropNumber.Nine; }),
                     child: Opacity(
-                        opacity: _cropNumber == CropNumber.FourEvenly ? 1 : 0.6,
-                        child: Image.asset('resources/images/four.png' , width: 24)
+                        opacity: _cropNumber == CropNumber.Nine ? 1 : 0.6,
+                        child: Image.asset('resources/images/9.png' , width: 24)
                     ),
                   ),
                 ],

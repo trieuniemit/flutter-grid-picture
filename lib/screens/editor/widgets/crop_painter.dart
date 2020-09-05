@@ -117,7 +117,7 @@ class CropPainter extends CustomPainter {
     gridPath.lineTo(bound.bottomLeft.dx,  bound.bottomLeft.dy);
     gridPath.lineTo(bound.topLeft.dx,  bound.topLeft.dy);
 
-    double y = (bound.top + (bound.bottom - bound.top) / 3 * 2);
+    double y = (bound.top + (bound.bottom - bound.top) * 2/3);
 
     // draw grid
     if(cropNumber == CropNumber.TwoH) {
@@ -134,11 +134,20 @@ class CropPainter extends CustomPainter {
       gridPath.moveTo(bound.topCenter.dx, y);
       gridPath.lineTo(bound.bottomCenter.dx, bound.bottomCenter.dy);
 
-    } else if(cropNumber == CropNumber.FourEvenly) {
-      gridPath.moveTo(bound.topCenter.dx, bound.topCenter.dy);
-      gridPath.lineTo(bound.bottomCenter.dx, bound.bottomCenter.dy);
-      gridPath.moveTo(bound.centerLeft.dx, bound.centerLeft.dy);
-      gridPath.lineTo(bound.centerRight.dx, bound.centerRight.dy);
+    } else if(cropNumber == CropNumber.Nine) {
+      double buildX(num) => (bound.left + (bound.right - bound.left) * num / 3);
+      double buildY(num) => (bound.top + (bound.bottom - bound.top) * num / 3);
+
+      gridPath.moveTo(buildX(1), bound.top);
+      gridPath.lineTo(buildX(1), bound.bottom);
+      gridPath.moveTo(buildX(2), bound.top);
+      gridPath.lineTo(buildX(2), bound.bottom);
+
+      gridPath.moveTo(bound.left, buildY(1));
+      gridPath.lineTo(bound.right, buildY(1));
+
+      gridPath.moveTo(bound.left, buildY(2));
+      gridPath.lineTo(bound.right, buildY(2));
 
     } else if(cropNumber == CropNumber.Four) {
       gridPath.moveTo(bound.left, y);
@@ -153,6 +162,7 @@ class CropPainter extends CustomPainter {
       gridPath.moveTo(x2, y);
       gridPath.lineTo(x2, bound.bottom);
     }
+
     canvas.drawPath(gridPath, paint);
   }
 }
