@@ -44,6 +44,12 @@ dependencies:
   connectivity: ^0.4.5+4 #check connect
   path: ^1.6.4
   url_launcher: ^5.4.11
+  firebase_admob: ^0.9.3+4
+  native_flutter_admob:
+    path: ../Plugins/native_flutter_admob
+
+    #git: https://github.com/trieuniemit/flutter-plugin-native-admob.git
+
 
   flutter_statusbarcolor: ^0.2.3 #statusbar
   image_editor: ^0.7.1
