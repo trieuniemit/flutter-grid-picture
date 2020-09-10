@@ -21,7 +21,7 @@ void main() {
 
 class App extends StatelessWidget {
   static StorageInfo storageInfo;
-
+  static String version = '1.0';
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class App extends StatelessWidget {
               builder: (context, state) {
                 Intl.defaultLocale = state.language;
                 return MaterialApp(
-                  title: 'Caiwai',
+                  title: 'Grid Pictures',
                   localizationsDelegates: [
                     AppLocalizationsDelegate(),
                     GlobalMaterialLocalizations.delegate,
@@ -66,9 +66,7 @@ class App extends StatelessWidget {
                   },
                   locale: Locale(state.language),
                   theme: ThemeData(
-//                    brightness: Brightness.light,
-//                    primaryColor: Colors.red,
-                    brightness: Brightness.dark,
+                    primaryColor: Colors.white
                   ),
                   darkTheme: ThemeData(
                     brightness: Brightness.dark,

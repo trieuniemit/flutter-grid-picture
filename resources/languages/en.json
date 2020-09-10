@@ -1,6 +1,13 @@
 {
     "app_name": "Flutter template",
-    "login": "Login",
-    "username": "Username",
-    "password": "Password"
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "setting": "Settings",
+    "pictures_folder": "Pictures folder",
+    "report_bugs": "Bugs report",
+    "report_bugs_desc": "Send us some bugs if you found them",
+    "rate_app": "Rating",
+    "rate_app_desc": "Application rating on Play Store",
+    "app_version": "Grid Pictures version",
+    "version": "Version"
 }

@@ -14,7 +14,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
 
   @override
-  AppState get initialState => AppState(language: 'ja');
+  AppState get initialState => AppState(language: 'en');
 
   @override
   Stream<AppState> mapEventToState(AppEvent event) async* {

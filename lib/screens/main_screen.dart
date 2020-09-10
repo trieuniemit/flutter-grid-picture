@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:app.gridpicture/config/routes.dart';
+import 'package:app.gridpicture/language.dart';
 import 'package:app.gridpicture/services/admob.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,12 +14,47 @@ class MainScreen extends StatelessWidget {
   final picker = ImagePicker();
 
   Future _getImage(ImageSource source, context) async {
-     final pickedFile = await picker.getImage(source: source);
+    final pickedFile = await picker.getImage(source: source);
     Routes.pushTo(context, EditorScreen(
       image: File(pickedFile.path),
       maximumScale: 5,
       chipShape: 'rect',
     ));
+  }
+
+  Widget _buildAppBar(context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: RichText(
+        text: TextSpan(
+            text: 'Grid',
+            style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontSize: 25,
+                fontWeight: FontWeight.bold
+            ),
+            children: [
+              TextSpan(
+                  text: ' Pictures',
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal
+                  )
+              )
+            ]
+        ),
+      ),
+      actions: [
+        CupertinoButton(
+          onPressed: () => null,
+          child: Icon(Icons.share, size: 26, color: Colors.white),
+        ),
+        CupertinoButton(
+          onPressed: () => Navigator.of(context).pushNamed(Routes.setting),
+          child: Icon(Icons.settings, size: 26, color: Colors.white),
+        )
+      ],
+    );
   }
 
   @override
@@ -36,17 +72,32 @@ class MainScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                _buildAppBar(context),
                 Container(
-                  padding: EdgeInsets.all(20),
-                  child:  ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    child: NativeAdmobBannerView(
-                      adUnitID: NativeAd.testAdUnitId,
-                      style: BannerStyle.light,
-                      showMedia: true,
-                      testDevices: AdmobService.testDevices,
-                      contentPadding: EdgeInsets.all(8),
-                    ),
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  child:  Column(
+                    children: [
+//                      ClipRRect(
+//                        borderRadius: BorderRadius.all(Radius.circular(15)),
+//                        child: NativeAdmobBannerView(
+//                          adUnitID: NativeAd.testAdUnitId,
+//                          style: BannerStyle.light,
+//                          showMedia: true,
+//                          testDevices: AdmobService.testDevices,
+//                          contentPadding: EdgeInsets.all(8),
+//                        ),
+//                      ),
+                      Container(
+                        height: 50,
+                        margin: EdgeInsets.only(left: 20, right: 20),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                repeat: ImageRepeat.repeatX,
+                                image: AssetImage('resources/images/home_icon.gif')
+                            )
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -67,7 +118,9 @@ class MainScreen extends StatelessWidget {
                               ),
                               child: Icon(Icons.camera_alt, size: 45, color: Colors.white),
                             ),
-                            Text('Chụp ảnh', style: Theme.of(context).textTheme.headline6)
+                            Text(AppLg.of(context).trans('camera'),
+                                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+                            )
                           ],
                         ),
                       ),
@@ -84,7 +137,9 @@ class MainScreen extends StatelessWidget {
                               ),
                               child: Icon(Icons.photo_library, size: 45, color: Colors.white),
                             ),
-                            Text('Thư viện', style: Theme.of(context).textTheme.headline6)
+                            Text(AppLg.of(context).trans('gallery'),
+                                style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+                            )
                           ],
                         ),
                       )
