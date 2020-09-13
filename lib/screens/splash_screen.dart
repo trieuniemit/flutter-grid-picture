@@ -1,6 +1,6 @@
-import 'package:app.gridpicture/blocs/app/app_bloc.dart';
-import 'package:app.gridpicture/blocs/app/app_state.dart';
-import 'package:app.gridpicture/config/routes.dart';
+import 'package:com.codestagevn.gridpicture/blocs/app/app_bloc.dart';
+import 'package:com.codestagevn.gridpicture/blocs/app/app_state.dart';
+import 'package:com.codestagevn.gridpicture/config/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

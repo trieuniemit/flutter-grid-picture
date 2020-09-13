@@ -3,10 +3,10 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
 import 'dart:ui';
-
-import 'package:app.gridpicture/extensions/file_extension.dart';
-import 'package:app.gridpicture/helpers/file_helpers.dart';
-import 'package:app.gridpicture/screens/editor/editor_channel.dart';
+import 'package:com.codestagevn.gridpicture/config/routes.dart';
+import 'package:com.codestagevn.gridpicture/extensions/file_extension.dart';
+import 'package:com.codestagevn.gridpicture/helpers/file_helpers.dart';
+import 'package:com.codestagevn.gridpicture/screens/share_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -120,8 +120,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
   }
 
   Future<void> cropCompleted(File file, {int pictureQuality = 1}) async {
-    final options = await EditorChannel.getImageOptions(file: file);
-    debugPrint('image width: ${options.width}, height: ${options.height}');
+    showLoading(context);
 
     Rect cropArea = Rect.fromLTRB(
         _image.width * area.left,
@@ -130,12 +129,25 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
         _image.height * area.bottom
     );
 
+    print('Crop $cropArea');
+
     List<Rect> areas = getCropAreasOfImage(cropArea, _cropNumber);
 
-    final editorOption = ImageEditorOption();
+    List<File> files = [];
 
     int index = 1;
+
+    String fileNamePrefix = (DateTime.now().millisecondsSinceEpoch).toString();
+
+    var folder = Directory(FileHelper.pictureFolder + '/' +fileNamePrefix);
+
+    if(! await folder.exists()) {
+      await folder.create();
+    }
+
     for(Rect rect in areas) {
+      final editorOption = ImageEditorOption();
+
       editorOption.addOption(ClipOption(
         x: rect.left < 0 ? 0 : rect.left,
         y: rect.top < 0 ? 0 : rect.top,
@@ -148,17 +160,20 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
         imageEditorOption: editorOption,
       );
 
-      String fileName = widget.image.name.replaceAll('image_picker', '')
-                        .replaceAll('.${widget.image.ext}', '');
+      await Future.delayed(Duration(milliseconds: 50));
 
-      String filePath = '${FileHelper.pictureFolder}/${fileName}_$index.${widget.image.ext}';
-      await File(filePath) .writeAsBytes(result);
+      String filePath = '${folder.path}/${fileNamePrefix}_$index.${widget.image.ext}';
 
-      print('Image $index - $filePath');
+      File file = await File(filePath).writeAsBytes(result);
+      files.add(file);
 
       editorOption.reset();
+      print('Image $index - $filePath');
       index++;
     }
+
+    print('Files: $files');
+    Routes.pushTo(context, ShareScreen(files, _cropNumber), replace: true);
   }
 
   void _getImage({bool force: false}) {

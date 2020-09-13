@@ -26,7 +26,7 @@ class FileHelper {
   static Future<void> createAppDirectories() async {
     if (await Permission.storage .request() .isGranted) {
       String rootDir = await getDocumentDirectory();
-      pictureFolder = rootDir + 'Pictures';
+      pictureFolder = rootDir + 'Pictures/GridPictures';
 
       List<String> dirToBeCreated = ['$rootDir/Pictures', pictureFolder];
 

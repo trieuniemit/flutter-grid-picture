@@ -1,8 +1,8 @@
-import 'package:app.gridpicture/screens/setting/setting_screen.dart';
-import 'package:app.gridpicture/screens/splash_screen.dart';
-import 'package:app.gridpicture/screens/welcome_screen.dart';
+import 'file:///F:/Projects/Flutter/GridPicture/lib/screens/setting_screen.dart';
+import 'package:com.codestagevn.gridpicture/screens/splash_screen.dart';
+import 'package:com.codestagevn.gridpicture/screens/welcome_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:app.gridpicture/screens/main_screen.dart';
+import 'package:com.codestagevn.gridpicture/screens/main_screen.dart';
 
 class Routes {
   static const String splash = '/';
@@ -25,8 +25,14 @@ class Routes {
     return CupertinoPageRoute(builder:(context) => SplashScreen());
   }
 
-  static Future<dynamic> pushTo(BuildContext context, Widget screen ) async {
-    return Navigator.of(context).push(CupertinoPageRoute(builder:(context) => screen));
+  static Future<dynamic> pushTo(BuildContext context, Widget screen, {bool replace = false}) async {
+    if(!replace) {
+      return Navigator.of(context).push(
+          CupertinoPageRoute(builder: (context) => screen));
+    }
+
+    return Navigator.of(context).pushReplacement(
+        CupertinoPageRoute(builder: (context) => screen));
   }
 }
 

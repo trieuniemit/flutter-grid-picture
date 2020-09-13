@@ -9,5 +9,8 @@
     "rate_app": "Rating",
     "rate_app_desc": "Application rating on Play Store",
     "app_version": "Grid Pictures version",
-    "version": "Version"
+    "version": "Version",
+    "share_desc": "Grid Picture make your awesome picture. Download at ",
+    "saved": "Saved",
+    "share_facebook": "Share Facebook"
 }

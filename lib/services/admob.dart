@@ -9,7 +9,7 @@ class AdmobService {
     childDirected: false,
     nonPersonalizedAds: true,
     keywords: <String>['Book', 'Game', 'Photo Editor', 'Editor'],
-    testDevices: <String>[],
+    testDevices: testDevices,
   );
 
 }

@@ -1,4 +1,4 @@
-import 'package:app.gridpicture/data/models/user.dart';
+import 'package:com.codestagevn.gridpicture/data/models/user.dart';
 
 class AppState {
   final String language;

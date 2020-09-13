@@ -1,4 +1,5 @@
-import 'package:app.gridpicture/screens/editor/common/constants.dart';
+import 'package:com.codestagevn.gridpicture/screens/editor/common/constants.dart';
+import 'package:com.codestagevn.gridpicture/screens/editor/widgets/loading.dart';
 import 'package:flutter/material.dart';
 
 List<Rect> getCropAreasOfImage(Rect area, CropNumber cropNumber) {
@@ -38,5 +39,17 @@ List<Rect> getCropAreasOfImage(Rect area, CropNumber cropNumber) {
       break;
   }
 
+  print('Crop areas: $areas');
   return areas;
+}
+
+void showLoading(context) {
+  showDialog(
+    barrierDismissible: false,
+    barrierColor: Colors.black54,
+    context: context,
+    builder: (context) {
+      return Loading();
+    }
+  );
 }

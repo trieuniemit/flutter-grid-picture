@@ -1,4 +1,4 @@
-import 'package:app.gridpicture/data/models/user.dart';
+import 'package:com.codestagevn.gridpicture/data/models/user.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppEvent extends Equatable {

@@ -1,4 +1,4 @@
-name: app.gridpicture
+name: com.codestagevn.gridpicture
 description: A new Flutter project.
 
 # The following defines the version and build number for your application.
@@ -30,7 +30,7 @@ dependencies:
   flutter_bloc: ^3.1.0
   equatable: ^1.0.1
   
-  cupertino_icons: ^0.1.2
+  #cupertino_icons: ^0.1.2
   http: ^0.12.0+2 #neetwork
   http_parser: ^3.1.3
   mime: ^0.9.6+3
@@ -40,11 +40,14 @@ dependencies:
   path_provider: ^1.2.0 #for write/read file
   path_provider_ex: ^1.0.1
   provider: ^4.0.1 #
+  intent: ^1.4.0
+  font_awesome_flutter: ^8.8.1
 
   connectivity: ^0.4.5+4 #check connect
   path: ^1.6.4
   url_launcher: ^5.4.11
   firebase_admob: ^0.9.3+4
+  share: ^0.6.5
   native_flutter_admob:
     #path: ../Plugins/native_flutter_admob
     git: https://github.com/trieuniemit/flutter-plugin-native-admob.git

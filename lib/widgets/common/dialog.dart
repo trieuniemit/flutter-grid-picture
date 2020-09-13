@@ -1,4 +1,4 @@
-import 'package:app.gridpicture/language.dart';
+import 'package:com.codestagevn.gridpicture/language.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

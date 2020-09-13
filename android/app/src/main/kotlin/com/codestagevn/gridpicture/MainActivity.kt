@@ -1,4 +1,4 @@
-package app.gridpicture
+package com.codestagevn.gridpicture
 
 import io.flutter.embedding.android.FlutterActivity
 
