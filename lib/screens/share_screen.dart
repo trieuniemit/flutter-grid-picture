@@ -1,20 +1,24 @@
 import 'dart:io';
-
 import 'package:com.codestagevn.gridpicture/language.dart';
 import 'package:com.codestagevn.gridpicture/screens/editor/common/constants.dart';
+import 'package:com.codestagevn.gridpicture/services/admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intent/intent.dart' as intent;
-import 'package:intent/action.dart' as action;
-import 'package:intent/category.dart' as category;
-
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:launch_review/launch_review.dart';
+import 'package:share/share.dart';
 
 class ShareScreen extends StatelessWidget {
   final List<File> files;
   final CropNumber number;
-  const ShareScreen(this.files, this.number);
+
+  ShareScreen(this.files, this.number) {
+    AdmobService.interstitial.isLoaded().then((value) {
+      if(value) {
+        AdmobService.showInterstitial();
+      }
+    });
+  }
 
   Widget _buildImage(double size) {
 
@@ -101,21 +105,40 @@ class ShareScreen extends StatelessWidget {
             SizedBox(height: 20),
             Row(
               children: [
-                Icon(Icons.folder, color: Colors.orange, size: 40),
+                Icon(Icons.check, color: Colors.green, size: 40),
                 SizedBox(width: 10),
-                Expanded(child: Text(folder.join('/'))),
+                Expanded(child: Text(AppLg.of(context).trans('saved_at') + ': ' + folder.join('/'))),
               ],
+            ),
+            SizedBox(height: 20),
+            RatingBar(
+              initialRating: 0,
+              minRating: 0,
+              direction: Axis.horizontal,
+              allowHalfRating: false,
+              itemCount: 5,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                LaunchReview.launch(androidAppId: "com.codestagevn.gridpicture");
+              },
             ),
             SizedBox(height: 30),
             CupertinoButton(
-              onPressed: () => null,
+              onPressed: () {
+                List<String> filePaths = List<String>.from(files.map((e) => e.path));
+                Share.shareFiles(filePaths);
+              },
               color: Colors.blue,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  FaIcon(FontAwesomeIcons.facebookF),
+                  Icon(Icons.share),
                   SizedBox(width: 10),
-                  Text(AppLg.of(context).trans('share_facebook'))
+                  Text(AppLg.of(context).trans('share_now'))
                 ],
               ),
             )

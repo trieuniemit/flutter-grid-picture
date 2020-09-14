@@ -1,23 +1,9 @@
-import 'package:com.codestagevn.gridpicture/data/models/user.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AppEvent extends Equatable {
   const AppEvent();
-
   @override
   List<Object> get props => [];
-}
-
-class AppStarted extends AppEvent {}
-
-class Authenticated extends AppEvent {
-  final String token;
-  final User user;
-
-  Authenticated(this.token, this.user);
-
-  @override
-  List<Object> get props => [token, user];
 }
 
 class SwitchLanguage extends AppEvent {
@@ -26,5 +12,3 @@ class SwitchLanguage extends AppEvent {
   @override
   List<Object> get props => [language];
 }
-
-class LogOut extends AppEvent {}

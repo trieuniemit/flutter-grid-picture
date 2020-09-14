@@ -7,6 +7,7 @@ import 'package:com.codestagevn.gridpicture/config/routes.dart';
 import 'package:com.codestagevn.gridpicture/extensions/file_extension.dart';
 import 'package:com.codestagevn.gridpicture/helpers/file_helpers.dart';
 import 'package:com.codestagevn.gridpicture/screens/share_screen.dart';
+import 'package:com.codestagevn.gridpicture/services/admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -94,6 +95,9 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     )..addListener(() => setState(() {})); // 裁剪背景灰度控制
     _settleController = AnimationController(vsync: this)
       ..addListener(_settleAnimationChanged);
+
+    //Load ads
+    AdmobService.loadInterstitial();
   }
 
   @override
@@ -145,22 +149,23 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
       await folder.create();
     }
 
+    var imageBytes = await widget.image.readAsBytes();
     for(Rect rect in areas) {
       final editorOption = ImageEditorOption();
 
       editorOption.addOption(ClipOption(
-        x: rect.left < 0 ? 0 : rect.left,
-        y: rect.top < 0 ? 0 : rect.top,
+        x: rect.left,
+        y: rect.top,
         height: rect.height,
         width: rect.width,
       ));
 
       final result = await ImageEditor.editImage(
-        image: await widget.image.readAsBytes(),
+        image: imageBytes,
         imageEditorOption: editorOption,
       );
 
-      await Future.delayed(Duration(milliseconds: 50));
+      await Future.delayed(Duration(milliseconds: 80));
 
       String filePath = '${folder.path}/${fileNamePrefix}_$index.${widget.image.ext}';
 
@@ -173,7 +178,10 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     }
 
     print('Files: $files');
-    Routes.pushTo(context, ShareScreen(files, _cropNumber), replace: true);
+    Routes.pushTo(context, ShareScreen(files, _cropNumber), replace: true).then((val) {
+      print('Load new ads');
+      AdmobService.loadInterstitial();
+    });
   }
 
   void _getImage({bool force: false}) {

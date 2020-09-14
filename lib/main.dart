@@ -2,6 +2,7 @@ import 'package:com.codestagevn.gridpicture/blocs/app/bloc.dart';
 import 'package:com.codestagevn.gridpicture/helpers/file_helpers.dart';
 import 'package:bloc/bloc.dart';
 import 'package:com.codestagevn.gridpicture/repositories/chat_repository.dart';
+import 'package:com.codestagevn.gridpicture/services/admob.dart';
 import 'package:com.codestagevn.gridpicture/widgets/restart_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,9 @@ import 'language.dart';
 void main() {
   BlocSupervisor.delegate = AppBlocDelegate();
   runApp(RestartApp(child: App()));
+
   FileHelper.createAppDirectories();
+  AdmobService.init();
 }
 
 class App extends StatelessWidget {
@@ -29,53 +32,46 @@ class App extends StatelessWidget {
     FlutterStatusbarcolor.setStatusBarColor(Colors.transparent);
 
     return BlocProvider<AppBloc>(
-        create: (BuildContext context) => AppBloc(),
-        child: BlocListener<AppBloc, AppState>(
-            listener: (context, state) {
-              if(state.isAuthenticated) {
-                ChatRepository.initialize(state.token);
-              }
+      create: (BuildContext context) => AppBloc(),
+      child: BlocBuilder<AppBloc, AppState>(
+            condition: (currentState, comingState) {
+              return comingState.language != currentState.language;
             },
-            child: BlocBuilder<AppBloc, AppState>(
-              condition: (currentState, comingState) {
-                return comingState.language != currentState.language;
-              },
-              builder: (context, state) {
-                Intl.defaultLocale = state.language;
-                return MaterialApp(
-                  title: 'Grid Pictures',
-                  localizationsDelegates: [
-                    AppLocalizationsDelegate(),
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate
-                  ],
-                  supportedLocales: AppLg.getLocales,
-                  localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
-                    if (locale == null) {
-                      print("Language locale is null!!. Set support to first!");
-                      return supportedLocales.first;
-                    }
-                    for (Locale supportedLocale in supportedLocales) {
-                      if (supportedLocale.languageCode == locale.languageCode || supportedLocale.countryCode == locale.countryCode) {
-                        return supportedLocale;
-                      }
-                    }
+            builder: (context, state) {
+              Intl.defaultLocale = state.language;
+              return MaterialApp(
+                title: 'Grid Pictures',
+                localizationsDelegates: [
+                  AppLocalizationsDelegate(),
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate
+                ],
+                supportedLocales: AppLg.getLocales,
+                localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
+                  if (locale == null) {
+                    print("Language locale is null!!. Set support to first!");
                     return supportedLocales.first;
-                  },
-                  locale: Locale(state.language),
-                  theme: ThemeData(
-                    primaryColor: Colors.white
-                  ),
-                  darkTheme: ThemeData(
-                    brightness: Brightness.dark,
-                  ),
-                  initialRoute: Routes.splash,  //set default route
-                  onGenerateRoute: Routes.appRoutes,
-                );
-              },
-            )
-        )
-    );
+                  }
+                  for (Locale supportedLocale in supportedLocales) {
+                    if (supportedLocale.languageCode == locale.languageCode || supportedLocale.countryCode == locale.countryCode) {
+                      return supportedLocale;
+                    }
+                  }
+                  return supportedLocales.first;
+                },
+                locale: Locale(state.language),
+                theme: ThemeData(
+                  primaryColor: Colors.white
+                ),
+                darkTheme: ThemeData(
+                  brightness: Brightness.dark,
+                ),
+                initialRoute: Routes.home,  //set default route
+                onGenerateRoute: Routes.appRoutes,
+              );
+            },
+          )
+      );
   }
 }
