@@ -127,18 +127,16 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     showLoading(context);
 
     Rect cropArea = Rect.fromLTRB(
-        _image.width * area.left,
-        _image.height * area.top,
-        _image.width * area.right,
-        _image.height * area.bottom
+        area.left * _image.width,
+        area.top * _image.height,
+        area.right * _image.width,
+        area.bottom * _image.height
     );
 
     print('Crop $cropArea');
-
     List<Rect> areas = getCropAreasOfImage(cropArea, _cropNumber);
 
     List<File> files = [];
-
     int index = 1;
 
     String fileNamePrefix = (DateTime.now().millisecondsSinceEpoch).toString();
@@ -152,6 +150,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     var imageBytes = await widget.image.readAsBytes();
     for(Rect rect in areas) {
       final editorOption = ImageEditorOption();
+      print('${rect.left}, ${rect.top}, ${rect.width}, ${rect.height}');
 
       editorOption.addOption(ClipOption(
         x: rect.left,
@@ -165,11 +164,11 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
         imageEditorOption: editorOption,
       );
 
-      await Future.delayed(Duration(milliseconds: 80));
-
       String filePath = '${folder.path}/${fileNamePrefix}_$index.${widget.image.ext}';
 
       File file = await File(filePath).writeAsBytes(result);
+      await Future.delayed(Duration(milliseconds: 100));
+
       files.add(file);
 
       editorOption.reset();
@@ -180,7 +179,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     print('Files: $files');
     Routes.pushTo(context, ShareScreen(files, _cropNumber), replace: true).then((val) {
       print('Load new ads');
-      AdmobService.loadInterstitial();
+      // AdmobService.loadInterstitial();
     });
   }
 

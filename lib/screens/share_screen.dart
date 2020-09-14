@@ -13,11 +13,11 @@ class ShareScreen extends StatelessWidget {
   final CropNumber number;
 
   ShareScreen(this.files, this.number) {
-    AdmobService.interstitial.isLoaded().then((value) {
-      if(value) {
-        AdmobService.showInterstitial();
-      }
-    });
+//    AdmobService.interstitial.isLoaded().then((value) {
+//      if(value) {
+//        AdmobService.showInterstitial();
+//      }
+//    });
   }
 
   Widget _buildImage(double size) {
