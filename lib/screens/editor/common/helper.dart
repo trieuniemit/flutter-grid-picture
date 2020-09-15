@@ -7,12 +7,12 @@ List<Rect> getCropAreasOfImage(Rect area, CropNumber cropNumber) {
 
   switch(cropNumber) {
     case CropNumber.TwoH:
-      areas.add(Rect.fromLTRB(area.left, area.top, area.right, area.bottom / 2));
-      areas.add(Rect.fromLTRB(area.left, area.bottom / 2, area.right, area.bottom));
+      areas.add(Rect.fromLTWH(area.left, area.top, area.width, area.height / 2));
+      areas.add(Rect.fromLTWH(area.left, area.height / 2, area.width, area.height / 2));
     break;
     case CropNumber.TwoV:
-      areas.add(Rect.fromLTRB(area.left, area.top, area.right / 2, area.bottom));
-      areas.add(Rect.fromLTRB(area.right/2, area.top, area.right, area.bottom));
+      areas.add(Rect.fromLTWH(area.left, area.top, area.width / 2, area.height));
+      areas.add(Rect.fromLTWH(area.left + area.width / 2, area.top, area.width / 2, area.height));
       break;
     case CropNumber.Three:
       areas.add(Rect.fromLTRB(area.left, area.top, area.right, area.bottom * 2/3));

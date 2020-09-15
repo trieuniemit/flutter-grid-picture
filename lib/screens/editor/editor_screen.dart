@@ -126,14 +126,15 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
   Future<void> cropCompleted(File file, {int pictureQuality = 1}) async {
     showLoading(context);
 
-    Rect cropArea = Rect.fromLTRB(
-        area.left * _image.width,
-        area.top * _image.height,
-        area.right * _image.width,
-        area.bottom * _image.height
-    );
+    double left = area.left * _image.width;
+    double top = area.top * _image.height;
+    double right = area.right * _image.width;
+    double bottom = area.bottom * _image.height;
+
+    Rect cropArea = Rect.fromLTRB(left, top, right, bottom);
 
     print('Crop $cropArea');
+
     List<Rect> areas = getCropAreasOfImage(cropArea, _cropNumber);
 
     List<File> files = [];
