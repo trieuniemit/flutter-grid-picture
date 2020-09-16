@@ -82,13 +82,18 @@ class MainScreen extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 20),
               child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(15)),
-//                      child: NativeAdmobBannerView(
-//                        adUnitID: NativeAd.testAdUnitId,
-//                        style: BannerStyle.light,
-//                        showMedia: true,
-//                        testDevices: AdmobService.testDevices,
-//                        contentPadding: EdgeInsets.all(8),
-//                      ),
+                  child: NativeAdmobBannerView(
+                    adUnitID: NativeAd.testAdUnitId,
+                    style: BannerStyle.light,
+                    showMedia: true,
+                    onCreate: (controller) {
+                      controller.onAdFailedToLoad = () {
+                        print('Fail to load');
+                      };
+                    },
+                    testDevices: AdmobService.testDevices,
+                    contentPadding: EdgeInsets.all(8),
+                  ),
               ),
             ),
             Row(

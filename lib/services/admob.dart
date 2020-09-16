@@ -1,4 +1,5 @@
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:native_flutter_admob/native_flutter_admob.dart';
 
 class AdmobService {
   static const adAppId = 'ca-app-pub-2340298263702925~1364095163';
@@ -19,6 +20,7 @@ class AdmobService {
 
   static void init() {
     FirebaseAdMob.instance.initialize(appId: adAppId);
+    NativeAdmob().initialize(appID: adAppId);
   }
 
   static InterstitialAd interstitial;
