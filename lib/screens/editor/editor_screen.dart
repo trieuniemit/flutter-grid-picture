@@ -156,7 +156,24 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
       await folder.create();
     }
 
-    var imageBytes = await widget.image.readAsBytes();
+    var addTextOption = AddTextOption();
+    addTextOption.addText(
+      EditorText(
+        offset: Offset((_image.width - 100).toDouble() , (_image.height - 30).toDouble()),
+        text: 'Grid Picture',
+        fontSizePx: 13,
+        textColor: Colors.red,
+        fontName: '',
+      ),
+    );
+    var textOption = ImageEditorOption();
+    textOption.addOption(addTextOption);
+
+    final imageBytes = await ImageEditor.editImage(
+      image: await widget.image.readAsBytes(),
+      imageEditorOption: textOption,
+    );
+
     for(Rect rect in areas) {
       final editorOption = ImageEditorOption();
       print('${rect.left}, ${rect.top}, ${rect.width}, ${rect.height}');

@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="AdsTemplateView">
+        <attr name="ads_template_type" format="reference"/>
+    </declare-styleable>
+</resources>
