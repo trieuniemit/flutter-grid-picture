@@ -1,6 +1,17 @@
 {
-    "app_name": "Cấu trúc mãu Flutter",
-    "login": "Đang nhập",
-    "username": "Tên đăng nhập",
-    "password": "Mật khẩu"
+    "app_name": "Grid Pictures",
+    "camera": "Camera",
+    "gallery": "Thư viện",
+    "setting": "Cài đặt",
+    "pictures_folder": "Thư mục lưu ảnh",
+    "report_bugs": "Báo lỗi",
+    "report_bugs_desc": "Hãy báo cho chúng tôi nếu bạn gặp lỗi",
+    "rate_app": "Đánh giá ứng dụng",
+    "rate_app_desc": "Đánh giá ứng dụng trên Play Store",
+    "app_version": "Phiên bản Grid Pictures",
+    "version": "Phiên bản",
+    "share_desc": "Grid Picture giúp tạo những bức ảnh tuyệt vời của bạn. Tải xuống tại ",
+    "saved": "Đã lưu",
+    "share_now": "Chia sẻ ngay",
+    "saved_at": "Đã lưu tại"
 }

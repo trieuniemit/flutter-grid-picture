@@ -13,6 +13,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:image_editor/image_editor.dart';
 
 import 'common/constants.dart';
@@ -98,6 +99,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
 
     //Load ads
     AdmobService.loadInterstitial();
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(true);
   }
 
   @override
@@ -105,6 +107,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     _imageStream?.removeListener(_imageListener);
     _activeController.dispose();
     _settleController.dispose();
+    FlutterStatusbarcolor.setStatusBarWhiteForeground(false);
     super.dispose();
   }
 
@@ -124,6 +127,11 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
   }
 
   Future<void> cropCompleted(File file, {int pictureQuality = 1}) async {
+
+    if(FileHelper.pictureFolder.isEmpty) {
+      await FileHelper.createAppDirectories();
+    }
+
     showLoading(context);
 
     double left = area.left * _image.width;
@@ -154,10 +162,10 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
       print('${rect.left}, ${rect.top}, ${rect.width}, ${rect.height}');
 
       editorOption.addOption(ClipOption(
-        x: rect.left,
-        y: rect.top,
-        height: rect.height,
-        width: rect.width,
+        x: rect.left.abs(),
+        y: rect.top.abs(),
+        height: rect.height.abs(),
+        width: rect.width.abs(),
       ));
 
       final result = await ImageEditor.editImage(
@@ -180,7 +188,7 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
     print('Files: $files');
     Routes.pushTo(context, ShareScreen(files, _cropNumber), replace: true).then((val) {
       print('Load new ads');
-      // AdmobService.loadInterstitial();
+       AdmobService.loadInterstitial();
     });
   }
 
@@ -196,8 +204,9 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
         children: [
           ConstrainedBox(
               constraints: const BoxConstraints.expand(),
@@ -225,21 +234,19 @@ class EditorScreenState extends State<EditorScreen> with TickerProviderStateMixi
             top: 0,
             right: 0,
             left: 0,
-            child: Container(
-              color: Colors.black12,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CupertinoButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Icon(Icons.close, size: 30, color: Colors.white),
-                  ),
-                  CupertinoButton(
-                    onPressed: () => cropCompleted(widget.image),
-                    child: Icon(Icons.check, size: 30, color: Colors.white),
-                  )
-                ],
+            child: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: CupertinoButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Icon(Icons.close, size: 30, color: Colors.white),
               ),
+              actions: [
+                CupertinoButton(
+                  onPressed: () => cropCompleted(widget.image),
+                  child: Icon(Icons.check, size: 30, color: Colors.white),
+                )
+              ],
             ),
           ),
           Positioned(

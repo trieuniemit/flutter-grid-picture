@@ -1,4 +1,4 @@
-import 'file:///F:/Projects/Flutter/GridPicture/lib/screens/setting_screen.dart';
+import 'package:com.codestagevn.gridpicture/screens/setting_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:com.codestagevn.gridpicture/screens/main_screen.dart';
 

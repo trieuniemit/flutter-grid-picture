@@ -1,7 +1,6 @@
 import 'package:com.codestagevn.gridpicture/blocs/app/bloc.dart';
 import 'package:com.codestagevn.gridpicture/helpers/file_helpers.dart';
 import 'package:bloc/bloc.dart';
-import 'package:com.codestagevn.gridpicture/repositories/chat_repository.dart';
 import 'package:com.codestagevn.gridpicture/services/admob.dart';
 import 'package:com.codestagevn.gridpicture/widgets/restart_app.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:com.codestagevn.gridpicture/config/routes.dart';
 import 'package:com.codestagevn.gridpicture/bloc_delegate.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider_ex/path_provider_ex.dart';
 import 'language.dart';
 
 void main() {
@@ -24,7 +22,6 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  static StorageInfo storageInfo;
   static String version = '1.0';
 
   @override

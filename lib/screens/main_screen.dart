@@ -64,25 +64,24 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage('resources/images/background.png')
-            )
-          ),
-          child: SafeArea(
-            bottom: false,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildAppBar(context),
-                Container(
-                  padding: EdgeInsets.only(left: 20, right: 20),
-                  margin: EdgeInsets.only(bottom: 20),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage('resources/images/background.png')
+        )
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: _buildAppBar(context),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              margin: EdgeInsets.only(bottom: 20),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
 //                      child: NativeAdmobBannerView(
 //                        adUnitID: NativeAd.testAdUnitId,
 //                        style: BannerStyle.light,
@@ -90,56 +89,55 @@ class MainScreen extends StatelessWidget {
 //                        testDevices: AdmobService.testDevices,
 //                        contentPadding: EdgeInsets.all(8),
 //                      ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                CupertinoButton(
+                  onPressed: () => _getImage(ImageSource.camera, context),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(35),
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.pink,
+                            borderRadius: BorderRadius.all(Radius.circular(70))
+                        ),
+                        child: Icon(Icons.camera_alt, size: 45, color: Colors.white),
+                      ),
+                      Text(AppLg.of(context).trans('camera'),
+                          style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+                      )
+                    ],
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CupertinoButton(
-                      onPressed: () => _getImage(ImageSource.camera, context),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(35),
-                            margin: EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.pink,
-                                borderRadius: BorderRadius.all(Radius.circular(70))
-                            ),
-                            child: Icon(Icons.camera_alt, size: 45, color: Colors.white),
-                          ),
-                          Text(AppLg.of(context).trans('camera'),
-                              style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
-                          )
-                        ],
+                CupertinoButton(
+                  onPressed: () => _getImage(ImageSource.gallery, context),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(35),
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.amber,
+                            borderRadius: BorderRadius.all(Radius.circular(70))
+                        ),
+                        child: Icon(Icons.photo_library, size: 45, color: Colors.white),
                       ),
-                    ),
-                    CupertinoButton(
-                      onPressed: () => _getImage(ImageSource.gallery, context),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(35),
-                            margin: EdgeInsets.only(bottom: 10),
-                            decoration: BoxDecoration(
-                                color: Colors.amber,
-                                borderRadius: BorderRadius.all(Radius.circular(70))
-                            ),
-                            child: Icon(Icons.photo_library, size: 45, color: Colors.white),
-                          ),
-                          Text(AppLg.of(context).trans('gallery'),
-                              style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+                      Text(AppLg.of(context).trans('gallery'),
+                          style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(height: 20)
               ],
             ),
-          ),
-        )
+            SizedBox(height: 20)
+          ],
+        ),
+      ),
     );
   }
 }

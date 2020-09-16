@@ -12,8 +12,7 @@ class FileHelper {
     Directory baseDir;
     if (Platform.isAndroid) {
       try {
-        baseDir =
-            Directory((await PathProviderEx.getStorageInfo()).first.rootDir);
+        baseDir = Directory((await PathProviderEx.getStorageInfo()).first.rootDir);
       } on PlatformException {
         baseDir = await getExternalStorageDirectory();
       }
