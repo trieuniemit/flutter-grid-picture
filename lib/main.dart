@@ -44,6 +44,7 @@ class App extends StatelessWidget {
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate
                 ],
+                debugShowCheckedModeBanner: false,
                 supportedLocales: AppLg.getLocales,
                 localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales) {
                   if (locale == null) {

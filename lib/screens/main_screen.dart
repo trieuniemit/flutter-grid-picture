@@ -68,6 +68,31 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  Widget _buildItem({ImageSource imageSource, Color backgroundColor,
+    Widget child, String label, double size = 27
+  }) {
+    return CupertinoButton(
+      onPressed: () => _getImage(imageSource, context),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(size),
+            margin: EdgeInsets.only(bottom: 10),
+            decoration: BoxDecoration(
+                color: backgroundColor,
+                borderRadius: BorderRadius.all(Radius.circular(70))
+            ),
+            child: child,
+          ),
+          Text(label,
+              style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -80,75 +105,68 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: _buildAppBar(context),
-        body: Column(
+        body: _isShowAds ? Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
               padding: EdgeInsets.only(left: 20, right: 20),
               margin: EdgeInsets.only(bottom: 20),
               child: ClipRRect(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: _isShowAds ? NativeAdmobBannerView(
-                    adUnitID: NativeAd.testAdUnitId,
-                    style: BannerStyle.light,
-                    showMedia: true,
-                    onCreate: (controller) {
-                      controller.onAdFailedToLoad = () {
-                        setState(() { _isShowAds = false;});
-                      };
-                    },
-                    testDevices: AdmobService.testDevices,
-                    contentPadding: EdgeInsets.all(8),
-                  ) : Container(
-                    //implement here
-                  ),
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                child: NativeAdmobBannerView(
+                  adUnitID: NativeAd.testAdUnitId,
+                  style: BannerStyle.light,
+                  showMedia: true,
+                  onCreate: (controller) {
+                    controller.onAdFailedToLoad = () {
+                      setState(() { _isShowAds = false;});
+                    };
+                  },
+                  testDevices: AdmobService.testDevices,
+                  contentPadding: EdgeInsets.all(8),
+                ),
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CupertinoButton(
-                  onPressed: () => _getImage(ImageSource.camera, context),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(35),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.pink,
-                            borderRadius: BorderRadius.all(Radius.circular(70))
-                        ),
-                        child: Icon(Icons.camera_alt, size: 45, color: Colors.white),
-                      ),
-                      Text(AppLg.of(context).trans('camera'),
-                          style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
-                      )
-                    ],
-                  ),
+                _buildItem(
+                  imageSource: ImageSource.camera,
+                  child: Image.asset('resources/images/camera.png', width: 64),
+                  backgroundColor: Colors.pink,
+                  label: AppLg.of(context).trans('camera')
                 ),
-                CupertinoButton(
-                  onPressed: () => _getImage(ImageSource.gallery, context),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(35),
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.amber,
-                            borderRadius: BorderRadius.all(Radius.circular(70))
-                        ),
-                        child: Icon(Icons.photo_library, size: 45, color: Colors.white),
-                      ),
-                      Text(AppLg.of(context).trans('gallery'),
-                          style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white)
-                      )
-                    ],
-                  ),
+                _buildItem(
+                    imageSource: ImageSource.gallery,
+                    child: Image.asset('resources/images/gallery.png', width: 64),
+                    backgroundColor: Colors.orange,
+                    label: AppLg.of(context).trans('gallery')
                 ),
               ],
             ),
             SizedBox(height: 20)
           ],
+        ) : Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildItem(
+                  imageSource: ImageSource.camera,
+                  size: 35,
+                  child: Image.asset('resources/images/camera.png', width: 64),
+                  backgroundColor: Colors.pink,
+                  label: AppLg.of(context).trans('camera')
+              ),
+              SizedBox(height: 20),
+              _buildItem(
+                  imageSource: ImageSource.gallery,
+                  child: Image.asset('resources/images/gallery.png', width: 64),
+                  size: 35,
+                  backgroundColor: Colors.orange,
+                  label: AppLg.of(context).trans('gallery')
+              ),
+            ],
+          ),
         ),
       ),
     );
