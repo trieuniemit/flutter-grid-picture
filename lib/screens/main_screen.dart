@@ -114,7 +114,7 @@ class _MainScreenState extends State<MainScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(15)),
                 child: NativeAdmobBannerView(
-                  adUnitID: NativeAd.testAdUnitId,
+                  adUnitID: AdmobService.homeNativeAdId,
                   style: BannerStyle.light,
                   showMedia: true,
                   onCreate: (controller) {
