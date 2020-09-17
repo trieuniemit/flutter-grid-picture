@@ -11,8 +11,14 @@ import 'package:native_flutter_admob/native_flutter_admob.dart';
 import 'package:share/share.dart';
 import 'editor/editor_screen.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   final picker = ImagePicker();
+  bool _isShowAds = true;
 
   Future _getImage(ImageSource source, context) async {
     final pickedFile = await picker.getImage(source: source);
@@ -82,17 +88,19 @@ class MainScreen extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 20),
               child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(15)),
-                  child: NativeAdmobBannerView(
+                  child: _isShowAds ? NativeAdmobBannerView(
                     adUnitID: NativeAd.testAdUnitId,
                     style: BannerStyle.light,
                     showMedia: true,
                     onCreate: (controller) {
                       controller.onAdFailedToLoad = () {
-                        print('Fail to load');
+                        setState(() { _isShowAds = false;});
                       };
                     },
                     testDevices: AdmobService.testDevices,
                     contentPadding: EdgeInsets.all(8),
+                  ) : Container(
+                    //implement here
                   ),
               ),
             ),
